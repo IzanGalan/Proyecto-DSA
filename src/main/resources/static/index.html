@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Temple Run - Acceso</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #1a1a1a;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: #2d2d2d;
+            padding: 40px;
+            border-radius: 10px;
+            border: 2px solid #ff9800;
+            text-align: center;
+            width: 300px;
+        }
+        h2 { color: #ff9800; }
+        input {
+            width: 90%; margin: 10px 0; padding: 10px;
+            background: #444; border: 1px solid #666; color: white;
+        }
+        button {
+            width: 100%; padding: 10px; background: #ff9800; border: none;
+            color: white; font-weight: bold; cursor: pointer; margin-top: 10px;
+        }
+        button:hover { background: #e68900; }
+        .link { margin-top: 15px; color: #aaa; cursor: pointer; text-decoration: underline; font-size: 0.9em; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="login-box">
+        <h2>Iniciar Sesión</h2>
+        <input type="text" id="log-user" placeholder="Usuario">
+        <input type="password" id="log-pass" placeholder="Contraseña">
+        <button onclick="login()">ENTRAR</button>
+        <p class="link" onclick="toggle()">Crear cuenta nueva</p>
+    </div>
+
+    <div id="reg-box" class="hidden">
+        <h2>Registro</h2>
+        <input type="text" id="reg-user" placeholder="Usuario">
+        <input type="password" id="reg-pass" placeholder="Contraseña">
+        <input type="email" id="reg-email" placeholder="Email">
+        <input type="tel" id="reg-tel" placeholder="Teléfono">
+        <button onclick="registrar()">REGISTRARSE</button>
+        <p class="link" onclick="toggle()">Volver a Login</p>
+    </div>
+</div>
+
+<script>
+    function toggle() {
+        document.getElementById('login-box').classList.toggle('hidden');
+        document.getElementById('reg-box').classList.toggle('hidden');
+    }
+
+    async function registrar() {
+        const datos = {
+            nombre: document.getElementById('reg-user').value,
+            password: document.getElementById('reg-pass').value,
+            email: document.getElementById('reg-email').value,
+            telefono: document.getElementById('reg-tel').value
+        };
+
+        const res = await fetch('/api/registro', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(datos)
+        });
+        alert(await res.text());
+        if((await res.text()) === "OK") toggle();
+    }
+
+    async function login() {
+        const datos = {
+            nombre: document.getElementById('log-user').value,
+            password: document.getElementById('log-pass').value
+        };
+
+        const res = await fetch('/api/login', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(datos)
+        });
+        const texto = await res.text();
+        if(texto === "OK") alert("¡BIENVENIDO AL JUEGO!");
+        else alert(texto);
+    }
+</script>
+</body>
+</html>
